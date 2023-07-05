@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- mapper태그에 namespace속성을 설정해야한다. (namespace값은 session객체가 sql문을 메소드에 의해 실행될 때 사용하는 mapper구분값이다) -->
+<mapper namespace="login">
+
+  <!-- 
+  	select문 실행하기
+  	<select>태그를 이용하고
+  	반드시 두개의 속성을 작성하기
+  	1. id -> sql문을 지칭하는 값
+  	2. resultType||resultMap -> 쿼리문의 실행결과를 반환할 타입을 지정
+  		resultType : java코드로 작성되어있는 타입(기본,클래스타입) [String]
+  		resultMap : mybatis에서 <resultMap>을 이용해서 만든 타입 [string]
+  		* 컬럼명과 매핑할 java클래스 필드명이 같으면 resultType다르면 resultMap을 만들어서 직접매핑한다.
+  		클래스간의 연관관계를 설정했을 때(has a) 사용
+   -->
+
+  <!-- vo객체와 resultset의 켤럼명 불일치할때 resultMap을 이용해서 맵핑시켜줄수 있다.
+  	   <resultMap id="구분" type="">
+  	   	 <id property="type에 설정된 객체의 필드명" column="resultset컬럼명">
+  	   	 <result property="자바의 클래스" column="DB 컬럼값">
+  	   	 <association >
+  	   	 <collection >
+  -->
+  <resultMap id="studentMap" type="com.mybatis.model.dto.Student">
+  		<id property="studentNo" column="student_no"/>
+  		<result property="studentName" column="student_name"/>
+  		<result property="studentTel" column="student_tel"/>
+  		<result property="studentEmail" column="student_email"/>
+  		<result property="studentAddress" column="student_addr"/>
+  </resultMap>
+  
+  <select id="selectStudent" parameterType="_int" resultMap="studentMap">
+  	<!-- SELECT 
+  	 STUDENT_NO AS STUDENTNO,
+  	 STUDENT_NAME AS STUDENTNAME,
+  	 STUDENT_TEL AS STUDENTTEL,
+  	 STUDENT_EMAIL AS STUDENTEMAIL,
+  	 STUDENT_ADDR AS STUDENTADDRESS,
+  	 REG_DATE -->
+  	 
+  	 SELECT * FROM STUDENT WHERE STUDENT_NO=#{NO}
+  </select>
+  
+  <select id="selectStudentAll" resultMap="studentMap">
+  	SELECT * FROM STUDENT
+  </select>
+  
+  <resultMap id="loginMap" type="com.web.model.dto.MemberDTO">
+  		<id property="userId" column="userid"/>
+  		<result property="userId" column="userid"/>
+  		<result property="password" column="password"/>
+  		<result property="userName" column="username"/>
+  		<result property="gender" column="gender"/>
+  		<result property="age" column="age"/>
+  		<result property="email" column="email"/>
+  		<result property="phone" column="phone"/>
+  		<result property="address" column="address"/>
+  		<result property="hobby" column="hobby"/>
+  		<result property="enrollDate" column="enrolldate"/>
+  </resultMap>
+  
+  <select id="selectByUserIdAndPw" parameterType="string" resultMap="loginMap">
+  	SELECT * FROM MEMBER WHERE USERID=#{login.get("userId")} AND PASSWORD=#{login.get("password")}
+  </select>
+  
+</mapper>
