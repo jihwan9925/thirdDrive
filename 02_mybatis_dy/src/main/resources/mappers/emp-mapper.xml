@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- mapper태그에 namespace속성을 설정해야한다. (namespace값은 session객체가 sql문을 메소드에 의해 실행될 때 사용하는 mapper구분값이다) -->
+<mapper namespace="emp">
+
+  <resultMap id="empMap" type="emp">
+  		<id property="empId" column="emp_id"/>
+  		<result property="empName" column="emp_name"/>
+  		<result property="empNo" column="emp_no"/>
+  		<result property="deftCode" column="deft_code"/>
+  		<result property="jobCode" column="job_code"/>
+  		<result property="salLevel" column="sal_level"/>
+  		<result property="managerId" column="manage_id"/>
+  		<result property="hireDate" column="hire_date"/>
+  		<result property="entDate" column="ent_date"/>
+  		<result property="entYn" column="ent_yn"/>
+  </resultMap>
+  
+  <select id="selectEmployeePage" resultMap="empMap">
+  <!-- 나머지 복잡한 구간은 mybatis가 알아서 처리하기 때문에 핵심부분만 출력하면 된다. -->
+  	SELECT * FROM EMPLOYEE
+  </select>
+  
+  <select id="selectEmpCount" resultType="_int">
+  	SELECT COUNT(*) FROM EMPLOYEE
+  </select>
+  <!-- 파라미터값을 가져올 때 2가지
+  		#{} : setType()값을 대입 -> 자료형에 맞는 리터럴을 대입 'emp_id'
+  		${} : 문자열처리하는 표현 -> emp_id
+   -->
+  <select id="searchEmp" resultMap="empMap" parameterType="map">
+  	SELECT * FROM 
+  	(SELECT E.*, DECODE(SUBSTR(EMP_NO,8,1),'1','M','2','F','3','M','4','F') AS GENDER 
+  	FROM EMPLOYEE E)
+  	<where>
+  		<if test="keyword!=null and keyword!=''">
+  			AND ${type} LIKE '%${keyword}%'
+  		</if>
+  		<if test="gender!=null and gender!=''">
+  			AND GENDER = #{gender}
+  		</if>
+  		<if test="salary!=null and salary!=''">
+  			<choose>
+  				<when test="salFlag == 'ge'">
+  					AND SALARY <![CDATA[>=]]> #{salary}
+  				</when>
+  				<when test="salFlag == 'le' ">
+  					AND SALARY <![CDATA[<=]]> #{salary}
+  				</when>
+  				<otherwise>
+  					AND SALARY = #{salary}
+  				</otherwise>
+  			</choose>
+  		</if>
+	  		
+	  		<if test="deptCodes!=null and deptCodes!=''">
+	  			AND DEPT_CODE IN
+	  			<!-- foreach문을 사용할 수 있다
+	  					속성
+	  					collection : 배열방식의 데이터
+	  					item : 배열의 데이터를 저장하는 변수명
+	  					open : 반복을 시작할 때 출력할 값을 설정
+	  					close : 반복을 끝냈을 때 출력할 값을 설정
+	  					separator : 반복할 때 마다 출력할 값을 설정
+	  					index : 배열의 인덱스번호를 저장하는 변수
+	  			 -->
+	  			 <foreach collection="deptCodes" open="(" item="d" separator="," close=")">
+	  			 #{d}
+	  			 </foreach>
+	  		</if>
+	  		
+	  		<if test="jobCodes!=null and jobCodes!=''">
+	  			AND JOB_CODE IN 
+	  			<foreach collection="jobCodes" open="(" item="j" separator="," close=")">
+	  			#{j}
+	  			</foreach>
+	  		</if>
+	  		
+	  		<if test="hireDate!=null and hireDate!=''">
+  			<choose>
+  				<when test="hireFlag == 'ge'">
+  					AND HIRE_DATE <![CDATA[>=]]> #{hireDate}
+  				</when>
+  				<when test="hireFlag == 'le' ">
+  					AND HIRE_DATE <![CDATA[<=]]> #{hireDate}
+  				</when>
+  				<otherwise>
+  					AND HIRE_DATE = #{hireDate}
+  				</otherwise>
+  			</choose>
+  		</if>
+	  				
+  	</where> 
+  	 
+  </select>
+  
+</mapper>
