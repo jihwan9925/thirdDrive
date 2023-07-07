@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.emp.model.dto.Department;
 import com.emp.model.dto.Employee;
 
 public interface EmpDao {
@@ -14,4 +15,6 @@ public interface EmpDao {
 	int selectEmpCount(SqlSession session);
 	
 	List<Employee> searchEmp(SqlSession session, Map<String,Object> param);
-}
+	
+	List<Department> selectAllDept(SqlSession session);
+ }

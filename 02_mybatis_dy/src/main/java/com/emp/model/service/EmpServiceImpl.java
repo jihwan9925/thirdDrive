@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import com.emp.model.dao.EmpDao;
 import com.emp.model.dao.EmpDaoImpl;
+import com.emp.model.dto.Department;
 import com.emp.model.dto.Employee;
 
 
@@ -37,5 +38,13 @@ public class EmpServiceImpl implements EmpService{
 		List<Employee> list = dao.searchEmp(session,param);
 		session.close();
 		return list;
+	}
+	
+	@Override
+	public List<Department> selectAllDept(){
+		SqlSession session = getSession();
+		List<Department> dept = dao.selectAllDept(session);
+		session.close();
+		return dept;
 	}
 }

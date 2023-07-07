@@ -17,11 +17,12 @@ public class Employee {
 	private String empNo;
 	private String email;
 	private String phone;
-	private String deftCode;
+//	private String deftCode;
+	private Department dept;
 	private String jobCode;
 	private String salLevel;
 	private int salary;
-	private double bouns;
+	private double bonus;
 	private int managerId;
 	private Date hireDate;
 	private Date entDate;

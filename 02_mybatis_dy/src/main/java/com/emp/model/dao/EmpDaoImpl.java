@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
+import com.emp.model.dto.Department;
 import com.emp.model.dto.Employee;
 
 
@@ -26,6 +27,11 @@ public class EmpDaoImpl implements EmpDao{
 	@Override
 	public List<Employee> searchEmp(SqlSession session, Map<String, Object> param) {
 		return session.selectList("emp.searchEmp",param);
+	}
+	
+	@Override
+	public List<Department> selectAllDept(SqlSession session) {
+		return session.selectList("emp.selectAllDept");
 	}
 
 }

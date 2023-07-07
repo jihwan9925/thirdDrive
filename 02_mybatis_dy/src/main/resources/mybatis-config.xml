@@ -12,6 +12,11 @@
 	</settings>
 	<typeAliases>
 		<typeAlias type="com.emp.model.dto.Employee" alias="emp"/>
+		<typeAlias type="com.emp.model.dto.Department" alias="department"/>
+		<typeAlias type="com.emp.model.dto.Board" alias="board"/>
+		<typeAlias type="com.emp.model.dto.BoardComment" alias="boardComment"/>
+		<typeAlias type="com.emp.model.dto.Member" alias="member"/>
+		<typeAlias type="com.emp.common.StringArrTypeHandler" alias="strArrType"/>
 	</typeAliases>
 	<environments default="mybatis">
 		<environment id="mybatis">
@@ -32,9 +37,19 @@
 				<property name="password" value="${pw}"/>
 			</dataSource>
 		</environment>
+		<environment id="web">
+			<transactionManager type="JDBC"/>
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="web"/>
+				<property name="password" value="web"/>
+			</dataSource>
+		</environment>
 	</environments>
 	<!-- 실행할 sql문을 설정한 mapper를 등록 -->
 	<mappers>
 		<mapper resource="/mappers/emp-mapper.xml"/>
+		<mapper resource="/mappers/member-mapper.xml"/>
 	</mappers>
 </configuration>

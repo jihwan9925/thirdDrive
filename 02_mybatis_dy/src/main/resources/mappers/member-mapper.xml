@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- mapper태그에 namespace속성을 설정해야한다. (namespace값은 session객체가 sql문을 메소드에 의해 실행될 때 사용하는 mapper구분값이다) -->
+<mapper namespace="member">
+
+	<select id="memberList" resultType="map">
+		SELECT * FROM MEMBER
+	</select>
+	
+	<resultMap type="board" id="boardMap">
+		<id property="boardNo" column="board_no"/>
+  		<result property="boardTitle" column="board_title"/>
+  		<!-- <result property="boardWriter" column="board_writer"/> -->
+  		<result property="boardContent" column="board_content"/>
+  		<result property="boardOriginalFileName" column="board_original_filename"/>
+  		<result property="boardRenamedFileName" column="board_renamed_filname"/>
+  		<result property="boardDate" column="board_date"/>
+  		<result property="boardReadCount" column="board_readcount"/>
+		<!-- 값을 넣을 때 참고를 처음부터 member로 잡아서 출력되도록 구현 -->
+  		<association property="boardWriter" resultMap="memberMap"/>
+  		<!-- 속성값으로 ofType을 사용하면 한번만 사용가능한 resultMap을 만들 수 있다. -->
+  		<collection property="boardComment" ofType="boardComment">
+  			<id property="boardCommentNo" column="board_comment_no"/>
+			<result property="boardCommentLevel" column="board_comment_level"/>
+			<!-- <result property="boardCommentWriter" column="board_comment_writer"/> -->
+			<result property="boardCommentContent" column="board_comment_content"/>
+			<result property="boardRef" column="board_ref"/>
+			<result property="boardCommentRef" column="board_comment_ref"/>
+			<result property="boardCommentDate" column="board_comment_date"/>
+			<result property="boardCommentWriter" column="board_comment_writer"/>
+  		</collection>
+	</resultMap>
+	
+	<!-- <resultMap type="boardComment" id="boardcommentMap">
+		<id property="boardCommentNo" column="board_comment_no"/>
+		<result property="boardCommentLevel" column="board_comment_level"/>
+		<result property="boardCommentWriter" column="board_comment_writer"/>
+		<result property="boardCommentContent" column="board_comment_content"/>
+		<result property="boardRef" column="board_ref"/>
+		<result property="boardCommentRef" column="board_comment_ref"/>
+		<result property="boardCommentDate" column="board_comment_date"/>
+	</resultMap>
+	-->
+	
+	<resultMap type="member" id="memberMap">
+		<id property="userId" column="userid"/>
+		<result property="password" column="password"/>
+		<result property="userName" column="username"/>
+		<result property="gender" column="gender"/>
+		<result property="age" column="age"/>
+		<result property="email" column="email"/>
+		<result property="phone" column="phone"/>
+		<result property="address" column="address"/>
+		<!-- 자바클래스는 String배열인데, 컬럼값은 varchar2 이므로 서로 타입을 맞추기 위해 typeHandler="strArrType"를 사용한다. -->
+		<result property="hobby" column="hobby" typeHandler="strArrType"/>
+		<result property="enrollDate" column="enrolldate"/>
+	</resultMap>
+	
+	
+	<select id="boardList" parameterType="_int" resultMap="boardMap">
+		SELECT * FROM BOARD 
+		LEFT JOIN BOARD_COMMENT ON board_no=board_ref 
+		JOIN MEMBER ON userid=board_writer
+		JOIN MEMBER M ON board_comment_writer=M.userid 
+		WHERE board_no=#{no}
+	</select>
+	
+</mapper>
